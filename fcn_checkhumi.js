@@ -11,9 +11,8 @@ const low = require('./fcnnoti/fcnnoti_low');
 const error = require('./fcnnoti/fcnnoti_error');
 
 const database = admin.database();
-for (let id = 1; id < 20; id++) {
-    function checkhumidity(id) {
-        const otherNodeRef = database.ref('Controller/' + id);
+    function checkhumidity(x) {
+        const otherNodeRef = database.ref('Controller/' + x);
         otherNodeRef.once('value').then((snapshot) => {
             const humi1 = snapshot.child('Humidity1').val();
             const humi2 = snapshot.child('Humidity2').val();
@@ -24,28 +23,28 @@ for (let id = 1; id < 20; id++) {
             const _nless = parseFloat(nless);
             const _nmore = parseFloat(nmore);
             if ((_humi1 && _humi2) <= _nless && (_humi1 && _humi2) >= 0) {
-                low.sendmessagelow(id);
-                console.log("ค่าความชื้นต่ำ" + id);
+                low.sendmessagelow(x);
+                console.log("ค่าความชื้นต่ำ" + x);
             } else if ((_humi1 && _humi2) >= _nmore && (_humi1 && _humi2) <= 100) {
-                high.sendmessagehigh(id);
-                console.log("ค่าความชื้นสูง" + id);
+                high.sendmessagehigh(x);
+                console.log("ค่าความชื้นสูง" + x);
             } else if (_humi1 > 100 || _humi2 > 100) {
-                error.sendmessagerror(id);
-                console.log("เกิดข้อผิดพลาด" + id);
+                error.sendmessagerror(x);
+                console.log("เกิดข้อผิดพลาด" + x);
             }
             else if (_humi1 < 0 || _humi2 < 0) {
-                error.sendmessagerror(id);
-                console.log("เกิดข้อผิดพลาด" + id);
+                error.sendmessagerror(x);
+                console.log("เกิดข้อผิดพลาด" + x);
             }
             else {
                 console.log("ปกติ");
             }
         });
-        return id;
+        return x;
     }
-    function addHumidity(id) {
-        const humidityRef = database.ref('statistics/' + id);
-        const otherNodeRef = database.ref('Controller/' + id);
+    function addHumidity(x) {
+        const humidityRef = database.ref('statistics/' + x);
+        const otherNodeRef = database.ref('Controller/' + x);
         otherNodeRef.once('value').then((snapshot) => {
             const Humidity = snapshot.child('Humidity1').val();
             const Humidity2 = snapshot.child('Humidity2').val();
@@ -58,21 +57,19 @@ for (let id = 1; id < 20; id++) {
                 time: hours,
             });
         });
-        return id;
+        return x;
     }
-    function deleteHumidity(id) {
-        const humidityRef = database.ref('statistics/' + id);
+    function deleteHumidity(x) {
+        const humidityRef = database.ref('statistics/' + x);
         humidityRef.once('value')
             .then((snapshot) => {
                 const firstChildKey = Object.keys(snapshot.val())[0];
                 humidityRef.child(firstChildKey).remove()
             })
-        return id;
+        return x;
     }
     module.exports = {
         checkhumidity,
         addHumidity,
         deleteHumidity,
     };
-}
-
