@@ -1,6 +1,6 @@
 const admin = require('firebase-admin');
 const serviceAccount = require('./serviceAccountKey.json');
-
+const moment = require("moment-timezone");
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://project-app-2fcd6-default-rtdb.firebaseio.com/'
@@ -43,13 +43,14 @@ const database = admin.database();
         return x;
     }
     function addHumidity(x) {
+        const timezone = "Asia/Bangkok";
+        const datetime = moment().tz(timezone);
         const humidityRef = database.ref('statistics/' + x);
         const otherNodeRef = database.ref('Controller/' + x);
         otherNodeRef.once('value').then((snapshot) => {
             const Humidity = snapshot.child('Humidity1').val();
             const Humidity2 = snapshot.child('Humidity2').val();
-            const date = new Date();
-            const hours = date.getHours();
+            const hours = datetime.format("HH");
             const humiset = humidityRef.push();
             humiset.set({
                 humi1: Humidity,
