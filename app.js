@@ -13,14 +13,14 @@ humidityRef.once('value')
 
             setInterval(() => {
                 check.addHumidity(i);
-            }, 60 * 60 * 1000); //36m
+            }, 60 * 60 * 1000); //36m 1h
 
             setInterval(() => {
                 check.deleteHumidity(i);
-            }, 60 * 60 * 1000);// 36m
+            }, 60 * 60 * 1000);// 36m 1h
 
             setInterval(() => {
                 check.checkhumidity(i);
-            }, 30 * 1000); //500k 500 * 1000
+            }, 300 * 1000); //300k 5 min
         }
     })
